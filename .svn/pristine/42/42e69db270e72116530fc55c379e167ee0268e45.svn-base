@@ -1,0 +1,259 @@
+package cn.tiandechain.jbccguide.app;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import cn.tiandechain.common.bean.ActionType;
+import cn.tiandechain.common.bean.DataBuilder;
+import cn.tiandechain.common.exception.JBCCClientException;
+import cn.tiandechain.common.exception.JBCCResult;
+import cn.tiandechain.common.util.Base64Utils;
+import cn.tiandechain.common.util.GsonUtil;
+import cn.tiandechain.common.util.RSAUtils;
+import cn.tiandechain.common.util.SHA256Util;
+import cn.tiandechain.jbccclient.client.JBCCConnection;
+
+/**
+ * @author liwh
+ * added by 2017-3-1
+ */
+public class JBCCTest {
+
+	public static void main(String[] args) throws Exception {
+		//用户签名私钥
+		String userPrivate = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAM7ju8WyI1L8yJtQC3N870XgmnnNphC6IISeynN5qCarf2gb9ChUrFcNiY4TKwinuDdBdhX0ZvFhb30NtRP8jibs5gspMxtV68uKl9+F5pXlRw4qyzS4JsmFhdNkWrxcxv4sOpgyJ6oT2qO9SDIvOqLPlkZkBG43sbByRMtqoigFAgMBAAECgYAs7Mi+ciM3hwqspyIFbvCqNM52epB/+1rKUYzWrGk2FHFzEvbetxxBPwBKqKDknT7kSMOymsKr0aOa/RoAAAyBxUsj1TwnLB8zpI2SN0hDVmGWrcC36t4OJJ0jsOhSTPvAAzczkfo2xG9ofLjikiVaj7iTKQ8YGu3WzqJqkucZYQJBAPEP+3ISDGesuzhN/pO/jJ54lvOpD2/FAuXFcSMzbJkeu+Y9zFP1u6sQJyjfOyZBB9fql4XSNykwFbuokbhd7S0CQQDbtak+bIOxDzMUlTPOLx6+ZeUoSQ/B6ljvBgNqi7jLxPOEw8+24AzoJjIICTRuPGKpLsCX9oHIOYJ0rUsIK105AkB1yvF7VAZrwqPZZ4M2fysfZJ2egsXgP8yiqlAWe1Jdn/8BCsGFZVZGyKXZ+vrUPoKupxtTcN0zayOzhzNte7ghAkBdBhlWWNOZT/osqM96aPD3ZGUWHXkSfYqSCVXA8s+XVxhUCiQUJeDRGfrs9BjC48ZSI31f2fsxL0hQ5l5yYwnhAkEAmej9siflw1lO1LNXitVcvvTk+uuHzO7Q51cwingffa5XtbgrjTyOKWS5w11xgZBHoOsAzqjX79zYJXo8AvJKNQ==";
+		//天德公钥
+		String tiandePublic = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCICwf6uM5n+UkCjvXmC3tBP5AA/RO/HffYa+FolZXdCOIZJmrReafqwhR24ntJ6xSeXLgiIKT/VYhyh+HEtzyF52XHc4X/fu/v7SL6QdkyveNcKBp5lkEu9zZZUCYFohnn98Csi0QEAaM9zShunjuWoYeK2/izSW1mI2tZex5J+wIDAQAB";
+		
+		JBCCConnection conn = new JBCCConnection();
+		conn.openConnection();
+		
+		/** ***********************************************************创建TBC 开始*******************************************************/
+//		UUID uuid = UUID.randomUUID();
+//		DataBuilder paramBuilder = new DataBuilder("CopyrightHome", uuid.toString(), new Date(), ActionType.CREATE_TBC,null);
+//		paramBuilder.addParam("agent_id", "String");
+//		paramBuilder.addParam("agent_user_id", "String");
+//		paramBuilder.addParam("register_type", "String");
+//		paramBuilder.addParam("product_label", "String");
+//		paramBuilder.addParam("product_name", "String");
+//		paramBuilder.addParam("agent_idempotent", "String");
+//		paramBuilder.addParam("product_hash", "String[]");
+//		paramBuilder.addParam("product_type", "String");
+//		paramBuilder.addParam("dci", "String");
+//		paramBuilder.addParam("creative_date", "long");
+//		paramBuilder.addParam("creative_address", "String");
+//		paramBuilder.addParam("publish_status", "String");
+//		paramBuilder.addParam("publish_date", "String");
+//		paramBuilder.addParam("publish_address", "String");
+//		paramBuilder.addParam("creative_purpose", "String");
+//		paramBuilder.addParam("creative_process", "String");
+//		paramBuilder.addParam("creative_self", "String");
+		
+		
+//		UUID uuid = UUID.randomUUID();
+//		DataBuilder paramBuilder = new DataBuilder("UnivInfoTransaction", uuid.toString(), new Date(), ActionType.CREATE_TBC,null);
+//		paramBuilder.addParam("userId", "String");
+//		paramBuilder.addParam("name", "String");
+//		paramBuilder.addParam("introduction", "String");
+//		paramBuilder.addParam("vtype", "String");
+//		paramBuilder.addParam("publicinfo", "String");
+//		paramBuilder.addParam("privateinfo", "String");
+//		paramBuilder.addParam("sex","String");
+//		paramBuilder.addParam("title", "String");
+//		paramBuilder.addParam("college","String");
+//		paramBuilder.addParam("degree", "String");
+//		paramBuilder.addParam("background", "String");
+//		paramBuilder.addParam("email", "String");
+//		
+//		//交易签名
+//		String plainTxt = GsonUtil.getGson().toJson(paramBuilder);
+//		//System.out.println("---------plainTxt:" +plainTxt +"-----------");
+//		String signature = RSAUtils.sign(plainTxt.getBytes(), userPrivate);
+//		//System.out.println("---------signature:" +signature +"-----------");
+//		//将交易签名及对应的原文添加进map中去
+//		paramBuilder.addParam("signature", Base64Utils.encode(signature.getBytes()));
+//		JBCCResult result = conn.createTBC(paramBuilder,tiandePublic);
+//		if(result != null){
+//			if(result.getStatus() == 0){//0成功，1失败
+//				System.out.println("-----success------");
+//			}else if(result.getStatus() == 1){
+//				System.out.println("-------fail-------");
+//			}
+//		}
+		/**************************************************************创建TBC 结束*******************************************************/
+		
+		
+		/**************************************************************INSERT/FAST_INSERT 开始********************************************/
+//		UUID uuid = UUID.randomUUID();
+//		DataBuilder paramBuilder = new DataBuilder("UnivInfoTransaction", uuid.toString(), new Date(), ActionType.INSERT,null);
+//		paramBuilder.addParam("userId", uuid.toString());
+//		paramBuilder.addParam("name", uuid.toString());
+//		paramBuilder.addParam("introduction", "test");
+//		paramBuilder.addParam("vtype", "0");
+//		paramBuilder.addParam("publicinfo", "Arizona State University");
+//		paramBuilder.addParam("privateinfo", "Getting Started for make mooncake");
+//		paramBuilder.addParam("sex", "male");
+//		paramBuilder.addParam("title", "test");
+//		paramBuilder.addParam("college", "北大");
+//		paramBuilder.addParam("degree", "学士");
+//		paramBuilder.addParam("background", "不告诉你");
+//		paramBuilder.addParam("email", "a@163.com");
+//		
+//		//交易签名
+//		String plainTxt = GsonUtil.getGson().toJson(paramBuilder);
+//		//System.out.println("---------plainTxt:" +plainTxt +"-----------");
+//		String signature = RSAUtils.sign(plainTxt.getBytes(), userPrivate);
+//		//System.out.println("---------signature:" +signature +"-----------");
+//		//将交易签名及对应的原文添加进map中去
+//		paramBuilder.addParam("signature", Base64Utils.encode(signature.getBytes()));
+//		JBCCResult result = conn.execute(paramBuilder, tiandePublic);
+//		if(result != null){
+//			if(result.getStatus() == 0){//0成功，1失败
+//				System.out.println("-----success------");
+//			}else if(result.getStatus() == 1){
+//				System.out.println("-------fail-------");
+//			}
+//		}
+		
+		/*************************************************************INSERT/FAST_INSERT 结束*********************************************/
+		
+		/**************************************************************BATCH_INSERT/BATCH_FAST_INSERT 开始********************************/
+//		List<DataBuilder> dataList = new ArrayList<DataBuilder>();
+//		int m = 1000;
+//		for(int i = 0;i<m;i++){
+//			UUID uuid = UUID.randomUUID();
+//			DataBuilder paramBuilder = new DataBuilder("UnivInfoTransaction", uuid.toString(), new Date(), ActionType.BATCH_INSERT,null);
+//			paramBuilder.addParam("userId", uuid.toString());
+//			paramBuilder.addParam("name", uuid.toString());
+//			paramBuilder.addParam("introduction", "test");
+//			paramBuilder.addParam("vtype", "0");
+//			paramBuilder.addParam("publicinfo", "Arizona State University");
+//			paramBuilder.addParam("privateinfo", "Getting Started for make mooncake");
+//			paramBuilder.addParam("sex", "male");
+//			paramBuilder.addParam("title", "test");
+//			paramBuilder.addParam("college", "北大");
+//			paramBuilder.addParam("degree", "学士");
+//			paramBuilder.addParam("background", "不告诉你");
+//			paramBuilder.addParam("email", "a@163.com");
+//			
+//			//交易签名
+//			String plainTxt = GsonUtil.getGson().toJson(paramBuilder);
+//			//System.out.println("---------plainTxt:" +plainTxt +"-----------");
+//			String signature = RSAUtils.sign(plainTxt.getBytes(), userPrivate);
+//			//System.out.println("---------signature:" +signature +"-----------");
+//			//将交易签名及对应的原文添加进map中去
+//			paramBuilder.addParam("signature", Base64Utils.encode(signature.getBytes()));
+//			dataList.add(paramBuilder);
+//		}
+//		
+//		JBCCResult result = conn.batchExecute(dataList,tiandePublic);
+//		if(result != null){
+//			if(result.getStatus() == 0){//0成功，1失败
+//				System.out.println("-----success------");
+//			}else if(result.getStatus() == 1){
+//				System.out.println("-------fail-------");
+//			}
+//		}
+		
+		/**************************************************************BATCH_INSERT/BATCH_FAST_INSERT 结束********************************/
+		
+		//查询部分
+//		UUID uuid = UUID.randomUUID();
+//		DataBuilder paramBuilder = new DataBuilder("UnivInfoTransaction", uuid.toString(), new Date(), ActionType.SELECT,null);
+//		paramBuilder.addParam("userId", uuid.toString());
+//		paramBuilder.addParam("name", uuid.toString());
+//		paramBuilder.addParam("introduction", "test");
+//		paramBuilder.addParam("vtype", "0");
+//		paramBuilder.addParam("publicinfo", "Arizona State University");
+//		paramBuilder.addParam("privateinfo", "Getting Started for make mooncake");
+//		paramBuilder.addParam("sex", "male");
+//		paramBuilder.addParam("title", "test");
+//		paramBuilder.addParam("college", "北大");
+//		paramBuilder.addParam("degree", "学士");
+//		paramBuilder.addParam("background", "不告诉你");
+//		paramBuilder.addParam("email", "a@163.com");
+		
+		
+		//ABC TBC分开场景
+		//conn.createABC(paramBuilder);
+		
+		
+		//统一场景
+//		conn.execute(dataList.get(0),tiandePublic);
+		
+		simulate(conn,10000,10,userPrivate,tiandePublic);
+		
+//		test();
+	}
+	
+	
+	public static void simulate(JBCCConnection conn, int count, int time,String userPrivate,String tiandePublic)
+			throws Exception {
+		int curr_sec = 0;
+		int id = 0;
+
+		while (curr_sec < time) {
+			System.out.println(String.valueOf(curr_sec));
+
+			long start = System.currentTimeMillis();
+			List<DataBuilder> dataList = new ArrayList<DataBuilder>();
+			//int m = 1000;
+			for(int i = 0;i<count;i++){
+				UUID uuid = UUID.randomUUID();
+				DataBuilder paramBuilder = new DataBuilder("UnivInfoTransaction", uuid.toString(), new Date(), ActionType.BATCH_INSERT,null);
+				paramBuilder.addParam("userId", uuid.toString());
+				paramBuilder.addParam("name", uuid.toString());
+				paramBuilder.addParam("introduction", "test");
+				paramBuilder.addParam("vtype", "0");
+				paramBuilder.addParam("publicinfo", "Arizona State University");
+				paramBuilder.addParam("privateinfo", "Getting Started for make mooncake");
+				paramBuilder.addParam("sex", "male");
+				paramBuilder.addParam("title", "test");
+				paramBuilder.addParam("college", "北大");
+				paramBuilder.addParam("degree", "学士");
+				paramBuilder.addParam("background", "不告诉你");
+				paramBuilder.addParam("email", "a@163.com");
+				
+				//交易签名
+				String plainTxt = GsonUtil.getGson().toJson(paramBuilder);
+				//System.out.println("---------plainTxt:" +plainTxt +"-----------");
+				plainTxt = SHA256Util.sha256(plainTxt);
+				String signature = RSAUtils.sign(plainTxt.getBytes(), userPrivate);
+				//System.out.println("---------signature:" +signature +"-----------");
+				//将交易签名及对应的原文添加进map中去
+				paramBuilder.addParam("signature", Base64Utils.encode(signature.getBytes()));
+				dataList.add(paramBuilder);
+			}
+			
+			System.out.printf("for System.currentTimeMillis() %dms \n", System.currentTimeMillis());
+			System.out.printf("for circle use %dms \n", (System.currentTimeMillis() - start));
+			JBCCResult result = conn.batchExecute(dataList,tiandePublic);
+			if(result != null){
+				if(result.getStatus() == 0){//0成功，1失败
+					System.out.println("-----success------");
+				}else if(result.getStatus() == 1){
+					System.out.println("-------fail-------");
+				}
+			}
+			
+			System.out.printf("batch use %dms \n", (System.currentTimeMillis() - start));
+
+			curr_sec++;
+//			try {
+//				Thread.sleep(sleepTime * 1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			
+		}
+
+		
+	}
+
+}
